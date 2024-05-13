@@ -6,6 +6,7 @@ use App\Models\Cdr;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ExtensionController extends Controller
@@ -39,7 +40,8 @@ class ExtensionController extends Controller
             $number = $request->number;
 
             $command = "asterisk -rx 'channel originate SIP/00@test-calls extension $prefix$number@genarated'";
-            echo exec($command);
+            Log::warning($command);
+            exec($command);
             $user->update(['extension_count' => $user->extension_count + 1]);
 
             if ($request->remaining == 0)
