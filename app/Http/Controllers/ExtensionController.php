@@ -39,7 +39,7 @@ class ExtensionController extends Controller
             $number = $request->number;
 
             $command = "asterisk -rx 'channel originate SIP/00@test-calls extension $prefix$number@genarated'";
-            echo shell_exec($command);
+            echo exec($command);
             $user->update(['extension_count' => $user->extension_count + 1]);
 
             if ($request->remaining == 0)
