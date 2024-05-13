@@ -12,11 +12,11 @@
     <input type="hidden" id="slug" value="{{$slug}}">
     <div class="row">
         <div class="col-12 form-group">
-            <table class="table table-striped">
+            <table class="table table-striped collapsed" id="table">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">User</th>
+                    <th scope="col" style="width: 200px">User</th>
                     <th scope="col">Prefix</th>
                     <th scope="col">Time Out</th>
                 </tr>
@@ -26,8 +26,17 @@
                     <tr>
                         <th scope="row">{{++$key}}</th>
                         <td>{{$user->name}}</td>
-                        <td>{{$user->prefix}}</td>
-                        <td>{{$user->time_out_from ." | ". $user->time_out_to}}</td>
+                        <td>
+                            <div class="edit_column_prefix" style="width: 100px"
+                                 id="prefix_{{$user->id}}">{{$user->prefix}}</div>
+                        </td>
+                        <td style="width: 400px">
+                            <div class="edit_column_time_out_from d-inline" style="width: 100px"
+                                 id="time_out_from_{{$user->id}}">{{$user->time_out_from}}</div>
+                            |
+                            <div class="edit_column_time_out_to d-inline" style="width: 100px"
+                                 id="time_out_to_{{$user->id}}">{{$user->time_out_to}}</div>
+                        </td>
                     </tr>
                 @endforeach
 
@@ -68,71 +77,6 @@
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
     crossorigin="anonymous"></script>
 
-<script>
-
-    $("#btn-send").click(function () {
-        $("#btn-send").prop("disabled", true)
-        let numbers = $("#numbers").val()
-        if (numbers.trim() !== "") {
-            let slug = $("#slug").val()
-            var numbersArray = numbers.split("\n").map(Number);
-
-            function processNumberWithDelay(index) {
-                if (index < numbersArray.length) {
-                    let value = numbersArray[index];
-                    let remaining = numbersArray.length - index - 1;
-                    $.ajax({
-                        type: "GET",
-                        url: slug + "/send/",
-                        async: false,
-                        data: {
-                            number: value,
-                            remaining: remaining,
-                        },
-                        success: function (data) {
-                            $("#number").text(value)
-                            $("#timeout").text(data.timeout)
-                            startCountdown(data.timeout);
-                            $("#remaining").text(remaining)
-                            $("#div_info").removeClass('d-none')
-                            timeout = data.timeout * 1000
-                        }
-                    })
-                    setTimeout(function () {
-                        processNumberWithDelay(index + 1);
-                    }, timeout);
-                } else {
-                    $("#div_info").addClass('d-none')
-                    $("#btn-send").prop("disabled", false)
-                }
-            }
-
-            processNumberWithDelay(0);
-        } else {
-            console.log("The numbers input is empty.");
-        }
-
-
-    });
-
-    function startCountdown(seconds) {
-        let counter = seconds;
-        const interval = setInterval(() => {
-            counter--;
-            $("#timeout").text(counter)
-        }, 1000);
-    };
-
-    function startCountdown(seconds) {
-        let counter = seconds;
-        const interval = setInterval(() => {
-            counter--;
-            $("#timeout").text(counter)
-            if (counter < 0 ) {
-                clearInterval(interval);
-            }
-        }, 1000);
-    }
-</script>
+@include('js')
 </body>
 </html>

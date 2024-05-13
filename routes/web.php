@@ -20,5 +20,5 @@ Route::get('/', function () {
 
 Route::get('{slug}/send', [ExtensionController::class, 'send'])->name('extensions.send');
 Route::get('{slug}', [ExtensionController::class, 'index'])->name('extensions.index');
-
+Route::post('user/edit', [ExtensionController::class, 'edit'])->name('extensions.edit');
 

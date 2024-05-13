@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ExtensionController extends Controller
 {
@@ -25,7 +26,7 @@ class ExtensionController extends Controller
 
         $timeout = 0;
         if ($user) {
-            $timeout = random_int($user->time_out_from, $user->time_out_to) ;
+            $timeout = random_int($user->time_out_from, $user->time_out_to);
             $prefix = $user->prefix;
             $number = $request->number;
             $command = "/usr/sbin/asterisk -rx 'channel originate SIP/00@test-calls extension $prefix$number@genarated'";
@@ -37,5 +38,14 @@ class ExtensionController extends Controller
         }
 
         return response(['timeout' => $timeout], 200);
+    }
+
+    public function edit(Request $request)
+    {
+        $user_id = Str::replace($request->type . '_', '', $request->user_id);
+
+        User::where('id', $user_id)->update([$request->type => $request->value]);
+
+        return response(null, 200);
     }
 }
