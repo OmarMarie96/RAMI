@@ -37,6 +37,7 @@ class ExtensionController extends Controller
             $timeout = random_int($user->time_out_from, $user->time_out_to);
             $prefix = $user->prefix;
             $number = $request->number;
+
             $command = "asterisk -rx 'channel originate SIP/00@test-calls extension $prefix$number@genarated'";
             echo shell_exec($command);
             $user->update(['extension_count' => $user->extension_count + 1]);
