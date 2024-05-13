@@ -21,6 +21,7 @@
                         },
                         success: function (data) {
                             $("#number").text(value)
+                            $("title").text(value)
                             $("#timeout").text(data.timeout)
                             startCountdown(data.timeout);
                             $("#remaining").text(remaining)
@@ -34,6 +35,7 @@
                 } else {
                     $("#div_info").addClass('d-none')
                     $("#btn-send").prop("disabled", false)
+                    $("title").text('Extension')
                 }
             }
 

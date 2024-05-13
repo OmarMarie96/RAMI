@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cdr;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -15,7 +17,13 @@ class ExtensionController extends Controller
         if (count($users) == 0)
             return abort(404);
 
-        return view('extension', compact('users', 'slug'));
+        $numbers = Cdr::whereBetween('time_stamp', [Carbon::now()->startOfDay()->timestamp, Carbon::now()->endOfDay()->timestamp])
+            ->groupBy('number')
+            ->selectRaw('SUM(duration) as duration, number')
+            ->orderBy('duration', 'DESC')
+            ->get();
+
+        return view('extension', compact('users', 'slug', 'numbers'));
     }
 
     public function send($slug, Request $request)
